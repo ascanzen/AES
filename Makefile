@@ -17,10 +17,14 @@ build_speed_test:
 build_release:
 	docker-compose exec aes g++ $(FLAGS) -O2 ./src/AES.cpp ./dev/main.cpp -o bin/release
 
-
+build_tests_padding:
+	docker-compose exec aes g++ $(FLAGS) -g -pthread ./src/AES.cpp ./src/base64.cpp ./tests/tests_padding.cpp /usr/lib/libgtest.a -o bin/tests_padding
 
 test:
 	docker-compose exec aes bin/test
+
+tests_padding:
+	docker-compose exec aes bin/tests_padding	
 
 debug:
 	docker-compose exec aes bin/debug
