@@ -49,6 +49,7 @@ auto aesEncrypt(const std::string &plain,const std::string &key = "Tt5CPXUAUZ2kx
 	unsigned char *out = aes.EncryptECB(padding, padding_len,(unsigned char *) key.c_str());
 	string base64Encrpt = base64_encode(out, padding_len);
 	delete[] out;
+	delete[] padding;
 
 	return base64Encrpt;
 }
