@@ -37,7 +37,7 @@ unsigned char *PKCS5Padding(unsigned char in[], unsigned int inLen)
 
 
 //https://github.com/SergeyBel/AES
-auto aes_encode(const std::string &plain,const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
+auto aesEncrypt(const std::string &plain,const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
 {
 	const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
 
@@ -53,7 +53,7 @@ auto aes_encode(const std::string &plain,const std::string &key = "Tt5CPXUAUZ2kx
 	return base64Encrpt;
 }
 
-auto aes_decode(const std::string &cipher, const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
+auto aesDEncrypt(const std::string &cipher, const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
 {
 	const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
 
@@ -134,8 +134,8 @@ void AesTest()
 
 int main()
 {
-	std::cout<< "aes_encode(abc,Tt5CPXUAUZ2kxn9S) = " << aes_encode("abc") << std::endl;
-	std::cout<< "aes_decode(aes_encode(abc,Tt5CPXUAUZ2kxn9S)) = " << aes_decode( aes_encode("abc")) << std::endl;
+	std::cout<< "aesEncrypt(abc,Tt5CPXUAUZ2kxn9S) = " << aesEncrypt("abc") << std::endl;
+	std::cout<< "aesDEncrypt((aesEncrypt(abc,Tt5CPXUAUZ2kxn9S)) = " << aesDEncrypt( aesEncrypt("abc"))<< std::endl;
 
 	AesTest();
 }
