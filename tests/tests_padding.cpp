@@ -64,14 +64,13 @@ unsigned char* PKCS5Padding(unsigned char in[], unsigned int inLen)
 	 //现在的加密是nopadding的，需要加上PKCS5Padding
 	 auto padding = PKCS5Padding(plain, sizeof(plain));
 	 auto padding_len = AES128_KEYLEN * (sizeof(plain) / AES128_KEYLEN + 1);
-	 std::cout<< padding_len << std::endl;
 	 unsigned char *out = aes.EncryptECB(padding, padding_len , key);
     //  unsigned char *out = aes.EncryptECB(plain, BLOCK_BYTES_LENGTH, key);
 
 
 	 string base64Encrpt = base64_encode(out, padding_len);
 
-	 cout << "base64Encode :" << base64Encrpt.length() << "   " << base64Encrpt << endl;
+	 cout << "base64Encode :" << base64Encrpt << endl;
 
 	 std::string encrypt_str = base64_decode(base64Encrpt);
 
@@ -91,7 +90,6 @@ unsigned char* PKCS5Padding(unsigned char in[], unsigned int inLen)
 	 for( i =0; i < encrypt_str.length() - lastASIIC; i++)
 	 	printf("0x%02x,",decrptOut[i]);
 	  printf("\n");
-
 
 
 
