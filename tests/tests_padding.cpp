@@ -26,12 +26,53 @@ unsigned char *PKCS5Padding(string strParams)
 		szArray[i1] = nPidding_size;
 	}
 
-	printf("padding size: %d\n", nPidding_size);
+	// printf("padding size: %d\n", nPidding_size);
 	return szArray;
 }
 unsigned char *PKCS5Padding(unsigned char in[], unsigned int inLen)
 {
 	return PKCS5Padding(std::string((char *)in, inLen));
+}
+
+
+
+//https://github.com/SergeyBel/AES
+auto aes_encode(const std::string &plain,const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
+{
+	const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
+
+	AES aes(AESKeyLength::AES_128);
+
+	//现在的加密是nopadding的，需要加上PKCS5Padding
+	auto padding = PKCS5Padding(plain);
+	auto padding_len = AES128_KEYLEN * (plain.length() / AES128_KEYLEN + 1);
+	unsigned char *out = aes.EncryptECB(padding, padding_len,(unsigned char *) key.c_str());
+	string base64Encrpt = base64_encode(out, padding_len);
+	delete[] out;
+
+	return base64Encrpt;
+}
+
+auto aes_decode(const std::string &cipher, const std::string &key = "Tt5CPXUAUZ2kxn9S") -> std::string
+{
+	const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
+
+	AES aes(AESKeyLength::AES_128);
+	
+	std::string encrypt_str = base64_decode(cipher);
+	unsigned char *decrptOut = aes.DecryptECB((unsigned char *)encrypt_str.c_str(), encrypt_str.length(), (unsigned char *)key.c_str());
+
+	// unpad with pkcs5, remove unused charactors
+	uint8_t lastASIIC = (uint8_t)decrptOut[encrypt_str.length() - 1];
+	auto len = encrypt_str.length() - lastASIIC;
+	if (len < 0 || len >= encrypt_str.length())
+	{
+		printf("AES_ECB_Cipher::decode, fail to decrypt src");
+		return std::string("");
+	}
+	auto plain = std::string((char*)decrptOut,len);
+	delete[] decrptOut;
+	return plain;
 }
 
 //https://github.com/SergeyBel/AES
@@ -93,6 +134,9 @@ void AesTest()
 
 int main()
 {
+	std::cout<< "aes_encode(abc,Tt5CPXUAUZ2kxn9S) = " << aes_encode("abc") << std::endl;
+	std::cout<< "aes_decode(aes_encode(abc,Tt5CPXUAUZ2kxn9S)) = " << aes_decode( aes_encode("abc")) << std::endl;
+
 	AesTest();
 }
 
